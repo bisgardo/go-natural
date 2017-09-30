@@ -20,12 +20,12 @@ It consists of the single function `Natural` with signature:
 Natural(left, right string) int
 ```
 
-Like any other comparator, `Natural` returns
+Like any comparator, `Natural` evaluates to
 * zero if `left = right`,
 * a negative value if `left < right`, and
 * a positive value if `left > right`.
 
-Natural comparison is similar to "ordinary" (i.e. byte to byte) comparison.
+Natural comparison is similar to "ordinary" (i.e. character by character) string comparison.
 The only difference is that numbers are compared in their entirety even if they span multiple charcters.
 For example, `"2" < "10"` even though `"1" < "2"`.
 
@@ -64,9 +64,9 @@ the order is simply defined according to the usual definition (i.e. byte compari
 
 ## Limitation
 
-Strings are currently compared byte per byte.
+Strings are currently indexed as single bytes.
 This means that multibyte characters will not compare correctly.
-This can (and might) be fixed by using `utf8.DecodeRuneInString`.
+This can be (and might get) fixed by using `utf8.DecodeRuneInString`.
 
 Dash is never interpreted as "minus",
 nor is such a feature planned.
