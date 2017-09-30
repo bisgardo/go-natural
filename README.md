@@ -38,10 +38,10 @@ For instance, `"v1.2.3" < "v1.10.1"` as one would expect.
 
 ## Formal definition
 
-The precise definition of natural comparison is the following:
+The precise definition of natural order is the following:
 
 Strings are equal if and only if they consist of the same bytes in the same order.
-If they are different, the order is determined as follows:
+If they are different, the order is determined using the following rule:
 
 Write the compared strings `left` and `right` as their longest common prefix
 concatenated by different (non-empty) suffixes:
@@ -70,18 +70,28 @@ the order is simply defined according to the usual definition (i.e. byte compari
 For sorting a string slice in natural order,
 `Naturally` is provided as a convenience implementation of `sort.Interface`.
 
-For example,
+For example, the program
 ```
-ss := []string{
-	"1.2.3",
-	"0.2.3",
-	"1.10.3",
-	"1.2.10",
-}
-sort.Sort(Naturally(ss))
+package main
 
-for _, s := range ss {
-	println(s)
+import (
+	"sort"
+
+	"github.com/halleknast/go-natural"
+)
+
+func main() {
+	ss := []string{
+		"1.2.3",
+		"0.2.3",
+		"1.10.3",
+		"1.2.10",
+	}
+	sort.Sort(strcmp.Naturally(ss))
+
+	for _, s := range ss {
+		println(s)
+	}
 }
 ```
 prints
