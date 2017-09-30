@@ -1,6 +1,6 @@
 # go-natural
 
-go-natural a small library for performing "natural" string comparison in Go (and on the beach).
+go-natural is a small library for performing "natural" string comparison in Go and on the beach.
 
 # Install
 
@@ -29,9 +29,12 @@ Natural comparison is similar to "ordinary" (i.e. character by character) string
 The only difference is that numbers are compared in their entirety even if they span multiple charcters.
 For example, `"2" < "10"` even though `"1" < "2"`.
 
-
 See [the tests](https://github.com/halleknast/go-natural/blob/master/natural_test.go)
 for a complete set of examples.
+
+Natural comparison is useful whenever strings are sorted for readability.
+It also allows correct comparison of e.g. semantic version strings.
+For instance, `"v1.2.3" < "v1.10.1"` as one would expect.
 
 ## Formal definition
 
