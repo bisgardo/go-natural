@@ -1,6 +1,6 @@
 package strcmp
 
-// Natural compares two strings by comparing embedded numbers as numbers.
+// Natural compares two strings naturally.
 func Natural(left, right string) int {
 	leftLen := len(left)
 	rightLen := len(right)

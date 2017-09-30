@@ -14,7 +14,7 @@ glide get github.com/halleknast/go-natural
 
 # Function
 
-It consists of the single function `Natural` with signature:
+The library contains a single function `Natural` with signature:
 
 ```
 Natural(left, right string) int
@@ -43,8 +43,8 @@ The precise definition of natural comparison is the following:
 Strings are equal if and only if they consist of the same bytes in the same order.
 If they are different, the order is determined as follows:
 
-Write the compared strings `left` and `right` as the longest common prefix
-followed by (non-empty) suffixes:
+Write the compared strings `left` and `right` as their longest common prefix
+concatenated by different (non-empty) suffixes:
 ```
 left  = <prefix><suffix1>
 right = <prefix><suffix2>
@@ -58,14 +58,41 @@ right = <prefix><number2><suffix2>
 ```
 
 If both number groups are non-empty,
-the string with the greater number is "larger".
+the string with the greater number is "greater".
 If the numbers are equal but have a different number of leading zeros,
-the number with the most leading zeros is "larger".
+the number with the most leading zeros is "greater".
 
 If either of the number groups are empty,
 the order is simply defined according to the usual definition (i.e. byte comparison).
 
-## Limitation
+## Sorting
+
+For sorting a string slice in natural order,
+`Naturally` is provided as a convenience implementation of `sort.Interface`.
+
+For example,
+```
+ss := []string{
+	"1.2.3",
+	"0.2.3",
+	"1.10.3",
+	"1.2.10",
+}
+sort.Sort(Naturally(ss))
+
+for _, s := range ss {
+	println(s)
+}
+```
+prints
+```
+0.2.3
+1.2.3
+1.2.10
+1.10.3
+```
+
+## Limitations
 
 Strings are currently indexed as single bytes.
 This means that multibyte characters will not compare correctly.
