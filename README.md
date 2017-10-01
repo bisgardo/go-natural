@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/halleknast/go-natural/badge.svg?branch=master)](https://coveralls.io/github/halleknast/go-natural?branch=master)
+
 # go-natural
 
 go-natural is a small library for performing "natural" string comparison in Go and on the beach.
