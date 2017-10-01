@@ -5,7 +5,8 @@ import "sort"
 // Assert that Naturally implements sort.Interface.
 var _ sort.Interface = Naturally{}
 
-// Naturally is a sort.Interface for sorting a string slice in natural order.
+// Naturally is a sort.Interface implementation
+// for sorting a string slice in natural order.
 type Naturally []string
 
 func (s Naturally) Less(i, j int) bool {
