@@ -110,5 +110,5 @@ Strings are currently indexed as single bytes.
 This means that multibyte characters will not compare correctly.
 This can be (and might get) fixed by using `utf8.DecodeRuneInString`.
 
-Dash is never interpreted as "minus",
-nor is such a feature planned.
+Negative and fractional numbers are not supported.
+It also isn't clear that one would want that.
