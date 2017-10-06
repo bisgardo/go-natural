@@ -4,7 +4,7 @@
 
 go-natural is a small library for performing "natural" string comparison in Go and on the beach.
 
-# Install
+# Installation
 
 ```
 go get github.com/halleknast/go-natural
@@ -28,11 +28,12 @@ Like any comparator, `Natural` evaluates to
 * a positive value if `left > right`.
 
 Natural comparison is similar to "ordinary" (i.e. character by character) string comparison.
-The only difference is that numbers are compared in their entirety even if they span multiple charcters.
+The main difference is that numbers are compared in their entirety even if they span multiple charcters.
 For example, `"2" < "10"` even though `"1" < "2"`.
 
 See [the tests](https://github.com/halleknast/go-natural/blob/master/natural_test.go)
-for a complete set of examples.
+for a complete set of examples and
+the next section for a formal definition.
 
 Natural comparison is useful whenever strings are sorted for readability.
 It also allows correct comparison of e.g. semantic version strings.
@@ -65,7 +66,13 @@ If the numbers are equal but have a different number of leading zeros,
 the number with the most leading zeros is "greater".
 
 If either of the number groups are empty,
-the order is simply defined according to the usual definition (i.e. byte comparison).
+the order is determined by single byte (character) comparison:
+Numbers characters are always larger than non-numbers.
+Other characters are simply compared by their byte values.
+The reason for this rule is that it allows a slightly faster
+implementation without sacrificing the ordering intent
+(the only order that matters is the one *within* the groups
+of upper-/lowercase letters and numbers - not between them).
 
 ## Sorting
 
@@ -90,7 +97,6 @@ func main() {
 		"1.2.10",
 	}
 	sort.Sort(strcmp.Naturally(ss))
-
 	for _, s := range ss {
 		println(s)
 	}
@@ -106,9 +112,6 @@ prints
 
 ## Limitations
 
-Strings are currently indexed as single bytes.
-This means that multibyte characters will not compare correctly.
-This can be (and might get) fixed by using `utf8.DecodeRuneInString`.
-
-Negative and fractional numbers are not supported.
-It also isn't clear that one would want that.
+Negative and fractional numbers are not supported
+since it isn't clear in which cases (and with what semantics)
+one would want that.

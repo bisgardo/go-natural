@@ -23,12 +23,12 @@ func Natural(left, right string) int {
 
 		ln, lok := parseInt(l)
 		rn, rok := parseInt(r)
-		if !lok || !rok {
-			// At least one of the bytes is not a number.
-			// Compare as bytes.
-			if l < r {
-				return -1
-			}
+
+		// Any number is larger than any non-number.
+		if !lok && rok {
+			return -1
+		}
+		if lok && !rok {
 			return 1
 		}
 

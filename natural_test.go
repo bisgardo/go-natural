@@ -44,13 +44,6 @@ func Test__number_comparison(t *testing.T) {
 	assertLessThan(t, "10", "20")
 }
 
-func Test__sadf(t *testing.T) {
-	left := "1"
-	right := "01"
-	r1 := Natural(left, right)
-	assert.Equal(t, -1, r1, "Natural(%s, %s)", left, right)
-}
-
 func Test__number_comparison_with_leading_zero(t *testing.T) {
 	assertLessThan(t, "0", "00")
 	assertLessThan(t, "1", "01")
@@ -66,9 +59,9 @@ func Test__number_comparison_with_trailing_zero(t *testing.T) {
 }
 
 func Test__number_comparison_after_letter_prefix(t *testing.T) {
-	// Digit is compared to letter.
-	assertLessThan(t, "10", "x2")
-	assertLessThan(t, "2", "x10")
+	// Digit is compared to letter (note that numbers are always "larger").
+	assertLessThan(t, "x2", "10")
+	assertLessThan(t, "x10", "2")
 
 	// Numbers are compared.
 	assertLessThan(t, "x2", "x10")
@@ -88,6 +81,12 @@ func Test__number_comparison_between_letters(t *testing.T) {
 	assertLessThan(t, "x2", "x10x")
 	assertLessThan(t, "x2x", "x10x")
 	assertLessThan(t, "x1x", "x01x")
+}
+
+func Test__number_comparison_after_equal_number(t *testing.T) {
+	assertLessThan(t, "x1x", "x10")
+	assertLessThan(t, "x1X", "x10")
+	assertLessThan(t, "x1 ", "x10")
 }
 
 func Test__number_with_different_suffix(t *testing.T) {
