@@ -122,6 +122,18 @@ func Benchmark__natural_small_single_digit_number_and_big_10_digit_number(b *tes
 	var v int
 
 	l := "2000000001"
+	r := "3"
+	for n := 0; n < b.N; n++ {
+		v = Natural(l, r)
+	}
+
+	blackHole = v
+}
+
+func Benchmark__natural_small_single_digit_number_and_big_10_digit_number_shortcut(b *testing.B) {
+	var v int
+
+	l := "2000000001"
 	r := "2"
 	for n := 0; n < b.N; n++ {
 		v = Natural(l, r)
