@@ -32,8 +32,8 @@ func Natural(left, right string) int {
 
 func innerCompare(l, r byte, left, right string, idx int) int {
 	// Bytes l and r are assumed to be different.
-	ln, lok := parseInt(l)
-	rn, rok := parseInt(r)
+	li, lok := parseInt(l)
+	ri, rok := parseInt(r)
 
 	// Any number character is "larger" than any non-number one.
 	if !lok && rok {
@@ -46,14 +46,13 @@ func innerCompare(l, r byte, left, right string, idx int) int {
 	leftLen := len(left)
 	rightLen := len(right)
 
+	leftNum := int64(li)
+	rightNum := int64(ri)
 	for {
-		var li int
-		var lok bool
+		var lok, rok bool
 		if idx < leftLen {
 			li, lok = parseInt(left[idx])
 		}
-		var ri int
-		var rok bool
 		if idx < rightLen {
 			ri, rok = parseInt(right[idx])
 		}
@@ -62,10 +61,10 @@ func innerCompare(l, r byte, left, right string, idx int) int {
 
 		if !lok {
 			if rok {
-				rn = 10*rn + ri
+				rightNum = 10*rightNum + int64(ri)
 			}
 
-			if rn > ln || rok && ln == rn {
+			if rightNum > leftNum || rok && leftNum == rightNum {
 				return -1
 			}
 
@@ -75,22 +74,23 @@ func innerCompare(l, r byte, left, right string, idx int) int {
 				if !ok {
 					break
 				}
-				rn = 10*rn + n
-				// Greater than or equal because right is longer than left (i.e. more leading zeros).
-				if rn >= ln {
+				rightNum = 10*rightNum + int64(n)
+				// Include '=' because right is longer than left (i.e. more leading zeros).
+				if rightNum >= leftNum {
 					return -1
 				}
 				idx++
 			}
 
+			// After reading all of right, rightNum remains strictly smaller than leftNum.
 			return 1
 		}
 		if !rok {
 			if lok {
-				ln = 10*ln + li
+				leftNum = 10*leftNum + int64(li)
 			}
 
-			if ln > rn || lok && ln == rn {
+			if leftNum > rightNum || lok && leftNum == rightNum {
 				return 1
 			}
 
@@ -100,23 +100,24 @@ func innerCompare(l, r byte, left, right string, idx int) int {
 				if !ok {
 					break
 				}
-				ln = 10*ln + n
-				// Greater than or equal because left is longer than right (i.e. more leading zeros).
-				if ln >= rn {
+				leftNum = 10*leftNum + int64(n)
+				// Include '=' because left is longer than right (i.e. more leading zeros).
+				if leftNum >= rightNum {
 					return 1
 				}
 				idx++
 			}
 
+			// After reading all of left, leftNum remains strictly smaller than rightNum.
 			return -1
 		}
 
-		ln = 10*ln + li
-		rn = 10*rn + ri
+		leftNum = 10*leftNum + int64(li)
+		rightNum = 10*rightNum + int64(ri)
 	}
 }
 
-func parseInt(b byte) (int, bool) {
-	i := int(b) - '0'
+func parseInt(b byte) (int8, bool) {
+	i := int8(b) - '0'
 	return i, 0 <= i && i <= 9
 }
