@@ -35,20 +35,31 @@ func innerCompare(l, r byte, left, right string, idx int) int {
 	li, lok := parseInt(l)
 	ri, rok := parseInt(r)
 
-	// Any number character is "larger" than any non-number one.
-	if !lok && rok {
-		return -1
-	}
-	if lok && !rok {
+	if !lok && !rok {
+		// Both are non-numbers. Compare as bytes.
+		if l < r {
+			return -1
+		}
 		return 1
 	}
 
+	// Any number character is "larger" than any non-number one.
+	if !lok {
+		return -1
+	}
+	if !rok {
+		return 1
+	}
+
+	// Both are numbers.
+	return innerCompareRemaining(left, right, int64(li), int64(ri), idx)
+}
+
+func innerCompareRemaining(left, right string, leftNum, rightNum int64, idx int) int {
 	leftLen := len(left)
 	rightLen := len(right)
-
-	leftNum := int64(li)
-	rightNum := int64(ri)
 	for {
+		var li, ri int8
 		var lok, rok bool
 		if idx < leftLen {
 			li, lok = parseInt(left[idx])
@@ -57,14 +68,19 @@ func innerCompare(l, r byte, left, right string, idx int) int {
 			ri, rok = parseInt(right[idx])
 		}
 
+		if !lok && !rok {
+			if leftNum < rightNum {
+				return -1
+			}
+			return 1
+		}
+
 		idx++
 
 		if !lok {
-			if rok {
-				rightNum = 10*rightNum + int64(ri)
-			}
+			rightNum = 10*rightNum + int64(ri)
 
-			if rightNum > leftNum || rok && leftNum == rightNum {
+			if rightNum >= leftNum {
 				return -1
 			}
 
@@ -86,11 +102,9 @@ func innerCompare(l, r byte, left, right string, idx int) int {
 			return 1
 		}
 		if !rok {
-			if lok {
-				leftNum = 10*leftNum + int64(li)
-			}
+			leftNum = 10*leftNum + int64(li)
 
-			if leftNum > rightNum || lok && leftNum == rightNum {
+			if leftNum >= rightNum {
 				return 1
 			}
 

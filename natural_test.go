@@ -93,6 +93,29 @@ func Test__number_with_different_suffix(t *testing.T) {
 	assertLessThan(t, "x2x", "x2y")
 }
 
+func Test__number_comparison_with_same_suffix(t *testing.T) {
+	assertLessThan(t, "0-", "1-")
+	assertLessThan(t, "0x", "1x")
+	assertLessThan(t, "0xy", "1xy")
+	assertLessThan(t, "1x", "010x")
+	assertLessThan(t, "0x0", "1x0")
+}
+
+func Test__number_comparison_with_different_suffix(t *testing.T) {
+	assertLessThan(t, "0xa", "1xb")
+	assertLessThan(t, "0xb", "1xa")
+	assertLessThan(t, "1xa", "010xb")
+
+	assertLessThan(t, "0x1", "1x0")
+	assertLessThan(t, "0a1", "1b0")
+	assertLessThan(t, "0b1", "1a0")
+}
+
+func Test__letter_comparison(t *testing.T) {
+	assertLessThan(t, "a1", "b0")
+	assertLessThan(t, "ab", "ba")
+}
+
 func assertEqual(t *testing.T, left, right string) {
 	r := Natural(left, right)
 	assert.Equal(t, 0, r, "Natural(%s, %s)", left, right)
