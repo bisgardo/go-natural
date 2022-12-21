@@ -10,12 +10,9 @@ func Natural(left, right string) int {
 		minLen = rightLen
 	}
 
-	for idx := 0; idx < minLen; idx++ {
-		l := left[idx]
-		r := right[idx]
-		if l != r {
-			return innerCompare(l, r, left, right, idx+1)
-		}
+	i := compare(left, right, minLen)
+	if i != 0 {
+		return i
 	}
 
 	// One string is a prefix of the other - longer is greater.
@@ -27,6 +24,17 @@ func Natural(left, right string) int {
 	}
 
 	// Strings are equal.
+	return 0
+}
+
+func compare(left string, right string, minLen int) int {
+	for idx := 0; idx < minLen; idx++ {
+		l := left[idx]
+		r := right[idx]
+		if l != r {
+			return innerCompare(l, r, left, right, idx+1)
+		}
+	}
 	return 0
 }
 
