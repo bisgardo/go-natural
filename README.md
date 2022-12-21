@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/halleknast/go-natural/badge.svg?branch=master)](https://coveralls.io/github/halleknast/go-natural?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/bisgardo/go-natural/badge.svg?branch=master)](https://coveralls.io/github/bisgardo/go-natural?branch=master)
 
 # go-natural
 
@@ -7,11 +7,7 @@ go-natural is a small library for performing "natural" string comparison in Go a
 # Installation
 
 ```
-go get github.com/halleknast/go-natural
-```
-or (preferrably)
-```
-glide get github.com/halleknast/go-natural
+go get github.com/bisgardo/go-natural
 ```
 
 # Function
@@ -31,7 +27,7 @@ Natural comparison is similar to "ordinary" (i.e. character by character) string
 The main difference is that numbers are compared in their entirety even if they span multiple charcters.
 For example, `"2" < "10"` even though `"1" < "2"`.
 
-See [the tests](https://github.com/halleknast/go-natural/blob/master/natural_test.go)
+See [the tests](https://github.com/bisgardo/go-natural/blob/master/natural_test.go)
 for a complete set of examples and
 the next section for a formal definition.
 
@@ -86,7 +82,7 @@ package main
 import (
 	"sort"
 
-	"github.com/halleknast/go-natural"
+	"github.com/bisgardo/go-natural"
 )
 
 func main() {
