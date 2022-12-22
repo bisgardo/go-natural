@@ -1,6 +1,6 @@
 package strcmp
 
-// Natural compares two strings naturally.
+// Natural compares two strings using "natural" semantics where numbers are compared in their entirety as opposed to byte for byte.
 func Natural(left, right string) int {
 	leftLen := len(left)
 	rightLen := len(right)
@@ -10,9 +10,87 @@ func Natural(left, right string) int {
 		minLen = rightLen
 	}
 
-	i := compare(left, right, minLen)
-	if i != 0 {
-		return i
+	idx := 0
+	for idx < minLen {
+		l := left[idx]
+		r := right[idx]
+		// Always skip equal bytes.
+		if l == r {
+			idx++
+			continue
+		}
+		if isDigit(l) || isDigit(r) {
+			// Skip any leading zeros.
+			leftStart := idx
+			for l == '0' {
+				leftStart++
+				if leftStart == leftLen {
+					break
+				}
+				l = left[leftStart]
+			}
+			rightStart := idx
+			for r == '0' {
+				rightStart++
+				if rightStart == rightLen {
+					break
+				}
+				r = right[rightStart]
+			}
+
+			// Find end of numbers "in parallel"; stopping as soon as one turns out to be longer than the other
+			// (could do fast path when leftStart==rightStart).
+			leftEnd := leftStart
+			rightEnd := rightStart
+			for {
+				leftIsDigit := leftEnd < leftLen && isDigit(left[leftEnd])
+				rightIsDigit := rightEnd < rightLen && isDigit(right[rightEnd])
+				if !leftIsDigit && !rightIsDigit {
+					break
+				}
+				if !leftIsDigit && rightIsDigit {
+					// Right number is longer.
+					return -1
+				}
+				if leftIsDigit && !rightIsDigit {
+					// Left number is longer.
+					return 1
+				}
+				leftEnd++
+				rightEnd++
+			}
+
+			// Numbers have the same length; compare as standard strings.
+			leftNumStr := left[leftStart:leftEnd]
+			rightNumStr := right[rightStart:rightEnd]
+			if leftNumStr < rightNumStr {
+				return -1
+			}
+			if leftNumStr > rightNumStr {
+				return 1
+			}
+
+			// Numbers are equal. Let the one with the most leading zeros win.
+			if leftStart < rightStart {
+				return -1
+			}
+			if leftStart > rightStart {
+				return 1
+			}
+
+			// Everything is equal. Skip what we read and start over.
+			idx = leftEnd
+			continue
+		}
+		// Do standard comparison of bytes.
+		if l < r {
+			return -1
+		}
+		// We already know that 'l' and 'r' are not equal.
+		if l > r {
+			return 1
+		}
+		idx++
 	}
 
 	// One string is a prefix of the other - longer is greater.
@@ -27,119 +105,6 @@ func Natural(left, right string) int {
 	return 0
 }
 
-func compare(left string, right string, minLen int) int {
-	for idx := 0; idx < minLen; idx++ {
-		l := left[idx]
-		r := right[idx]
-		if l != r {
-			return innerCompare(l, r, left, right, idx+1)
-		}
-	}
-	return 0
-}
-
-func innerCompare(l, r byte, left, right string, idx int) int {
-	// Bytes l and r are assumed to be different.
-	li, lok := parseInt(l)
-	ri, rok := parseInt(r)
-
-	if !lok && !rok {
-		// Both are non-numbers. Compare as bytes.
-		if l < r {
-			return -1
-		}
-		return 1
-	}
-
-	// Any number character is "larger" than any non-number one.
-	if !lok {
-		return -1
-	}
-	if !rok {
-		return 1
-	}
-
-	// Both are numbers.
-	return innerCompareRemaining(left, right, int64(li), int64(ri), idx)
-}
-
-func innerCompareRemaining(left, right string, leftNum, rightNum int64, idx int) int {
-	leftLen := len(left)
-	rightLen := len(right)
-	for {
-		var li, ri int8
-		var lok, rok bool
-		if idx < leftLen {
-			li, lok = parseInt(left[idx])
-		}
-		if idx < rightLen {
-			ri, rok = parseInt(right[idx])
-		}
-
-		if !lok && !rok {
-			if leftNum < rightNum {
-				return -1
-			}
-			return 1
-		}
-
-		idx++
-
-		if !lok {
-			rightNum = 10*rightNum + int64(ri)
-
-			if rightNum >= leftNum {
-				return -1
-			}
-
-			// Read rest of right until it's larger than left.
-			for idx < rightLen {
-				n, ok := parseInt(right[idx])
-				if !ok {
-					break
-				}
-				rightNum = 10*rightNum + int64(n)
-				// Include '=' because right is longer than left (i.e. more leading zeros).
-				if rightNum >= leftNum {
-					return -1
-				}
-				idx++
-			}
-
-			// After reading all of right, rightNum remains strictly smaller than leftNum.
-			return 1
-		}
-		if !rok {
-			leftNum = 10*leftNum + int64(li)
-
-			if leftNum >= rightNum {
-				return 1
-			}
-
-			// Read rest of left until it's larger than right.
-			for idx < leftLen {
-				n, ok := parseInt(left[idx])
-				if !ok {
-					break
-				}
-				leftNum = 10*leftNum + int64(n)
-				// Include '=' because left is longer than right (i.e. more leading zeros).
-				if leftNum >= rightNum {
-					return 1
-				}
-				idx++
-			}
-
-			// After reading all of left, leftNum remains strictly smaller than rightNum.
-			return -1
-		}
-
-		leftNum = 10*leftNum + int64(li)
-		rightNum = 10*rightNum + int64(ri)
-	}
-}
-
-func parseInt(b byte) (int8, bool) {
-	i := int8(b) - '0'
-	return i, 0 <= i && i <= 9
+func isDigit(b byte) bool {
+	return '0' <= b && b <= '9'
 }

@@ -24,7 +24,7 @@ Like any comparator, `Natural` evaluates to
 * a positive value if `left > right`.
 
 Natural comparison is similar to "ordinary" (i.e. character by character) string comparison.
-The main difference is that numbers are compared in their entirety even if they span multiple charcters.
+The main difference is that numbers are compared in their entirety even if they span multiple characters.
 For example, `"2" < "10"` even though `"1" < "2"`.
 
 See [the tests](https://github.com/bisgardo/go-natural/blob/master/natural_test.go)
